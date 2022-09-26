@@ -48,16 +48,17 @@ etc, then start as follows:
 ROS1:
 ```
 # create rendered ROS image stream from events
-rosrun event_array_viewer viewer.launch camera:=my_camera
+roslaunch event_array_viewer viewer.launch camera:=my_camera
+rqt_image_view
 ```
 
 ROS2:
 ```
 # create rendered ROS image stream from events
-ros2 run event_array_viewer viewer.launch camera:=my_camera
+ros2 launch event_array_viewer viewer.launch camera:=my_camera
+ros2 run rqt_image_view rqt_image_view
 ```
 
-Then launch a tool like ``rqt_image_view`` to view the image stream.
 
 ## License
 

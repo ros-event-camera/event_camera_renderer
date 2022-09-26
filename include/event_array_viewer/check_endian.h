@@ -16,12 +16,14 @@
 #ifndef EVENT_ARRAY_VIEWER__CHECK_ENDIAN_H_
 #define EVENT_ARRAY_VIEWER__CHECK_ENDIAN_H_
 
+#include <stdint.h>
+
 namespace event_array_viewer
 {
 namespace check_endian
 {
 // check endianness
-inline bool isBigEndian()
+inline constexpr bool isBigEndian()
 {
   const union {
     uint32_t i;

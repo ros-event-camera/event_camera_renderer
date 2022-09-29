@@ -1,0 +1,8 @@
+<launch>
+  <arg name="camera" default="/event_camera"/>
+  <node pkg="event_array_viewer" type="viewer_node" name="viewer" clear_params="true"
+	output="screen">
+    <param name="fps" value="25"/>
+    <remap from="~events" to="$(arg camera)/events"/>
+  </node>
+</launch>

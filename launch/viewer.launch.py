@@ -26,7 +26,6 @@ def launch_setup(context, *args, **kwargs):
     """Create simple node."""
     cam_name = LaunchConfig('camera_name')
     cam_str = cam_name.perform(context)
-    print(cam_str)
     node = Node(package='event_array_viewer',
                 executable='viewer_node',
                 output='screen',

@@ -16,7 +16,7 @@
 #ifndef EVENT_ARRAY_VIEWER__VIEWER_ROS2_H_
 #define EVENT_ARRAY_VIEWER__VIEWER_ROS2_H_
 
-#include <event_array_codecs/decoder.h>
+#include <event_array_codecs/decoder_factory.h>
 
 #include <event_array_msgs/msg/event_array.hpp>
 #include <image_transport/image_transport.hpp>
@@ -49,7 +49,7 @@ private:
   rclcpp::Subscription<event_array_msgs::msg::EventArray>::SharedPtr eventSub_;
   image_transport::Publisher imagePub_;
   sensor_msgs::msg::Image imageMsgTemplate_;
-  std::shared_ptr<event_array_codecs::Decoder> decoder_;
+  event_array_codecs::DecoderFactory<ImageUpdater> decoderFactory_;
 };
 }  // namespace event_array_viewer
 #endif  // EVENT_ARRAY_VIEWER__VIEWER_ROS2_H_

@@ -94,24 +94,24 @@ void Viewer::subscriptionCheckTimerExpired()
 
 void Viewer::eventMsg(EventArray::ConstSharedPtr msg)
 {
-  if (!decoder_) {
+  if (imageMsgTemplate_.height == 0) {
     imageMsgTemplate_.header = msg->header;
     imageMsgTemplate_.width = msg->width;
     imageMsgTemplate_.height = msg->height;
     imageMsgTemplate_.encoding = "bgr8";
     imageMsgTemplate_.is_bigendian = check_endian::isBigEndian();
     imageMsgTemplate_.step = 3 * imageMsgTemplate_.width;
-    decoder_ = event_array_codecs::Decoder::newInstance(msg->encoding);
-    if (!decoder_) {
-      RCLCPP_WARN_STREAM(get_logger(), "invalid encoding: " << msg->encoding);
-      return;
-    }
     if (!imageUpdater_.hasImage()) {
       startNewImage();
     }
   }
+  auto decoder = decoderFactory_.getInstance(msg->encoding);
+  if (!decoder) {
+    std::cout << "invalid encoding: " << msg->encoding << std::endl;
+    return;
+  }
   // decode will produce callbacks to imageUpdater_
-  decoder_->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
+  decoder->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
 }
 
 void Viewer::frameTimerExpired()

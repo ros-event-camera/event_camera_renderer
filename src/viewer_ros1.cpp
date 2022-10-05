@@ -29,6 +29,7 @@ Viewer::Viewer(ros::NodeHandle & nh) : nh_(nh)
   imagePub_ = it.advertise(
     "image_raw", 1, boost::bind(&Viewer::imageConnectCallback, this, boost::placeholders::_1),
     boost::bind(&Viewer::imageConnectCallback, this, boost::placeholders::_1));
+  imageMsgTemplate_.height = 0;
 }
 
 Viewer::~Viewer() { frameTimer_.stop(); }
@@ -72,24 +73,24 @@ void Viewer::startNewImage()
 
 void Viewer::eventMsg(const EventArray::ConstPtr & msg)
 {
-  if (!decoder_) {
+  if (imageMsgTemplate_.height == 0) {
     imageMsgTemplate_.header = msg->header;
     imageMsgTemplate_.width = msg->width;
     imageMsgTemplate_.height = msg->height;
     imageMsgTemplate_.encoding = "bgr8";
     imageMsgTemplate_.is_bigendian = check_endian::isBigEndian();
     imageMsgTemplate_.step = 3 * imageMsgTemplate_.width;
-    decoder_ = event_array_codecs::Decoder::newInstance(msg->encoding);
-    if (!decoder_) {
-      ROS_WARN_STREAM("invalid encoding: " << msg->encoding);
-      return;
-    }
     if (!imageUpdater_.hasImage()) {
       startNewImage();
     }
   }
+  auto decoder = decoderFactory_.getInstance(msg->encoding);
+  if (!decoder) {
+    ROS_INFO_STREAM("invalid encoding: " << msg->encoding);
+    return;
+  }
   // decode will produce callbacks to imageUpdater_
-  decoder_->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
+  decoder->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
 }
 
 }  // namespace event_array_viewer

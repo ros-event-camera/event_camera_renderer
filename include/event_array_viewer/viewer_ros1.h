@@ -17,6 +17,7 @@
 #define EVENT_ARRAY_VIEWER__VIEWER_ROS1_H_
 
 #include <event_array_codecs/decoder.h>
+#include <event_array_codecs/decoder_factory.h>
 #include <event_array_msgs/EventArray.h>
 #include <image_transport/image_transport.h>
 #include <ros/ros.h>
@@ -51,7 +52,7 @@ private:
   bool isSubscribedToEvents_{false};
   image_transport::Publisher imagePub_;
   sensor_msgs::Image imageMsgTemplate_;
-  std::shared_ptr<event_array_codecs::Decoder> decoder_;
+  event_array_codecs::DecoderFactory<ImageUpdater> decoderFactory_;
 };
 }  // namespace event_array_viewer
 #endif  // EVENT_ARRAY_VIEWER__VIEWER_ROS1_H_

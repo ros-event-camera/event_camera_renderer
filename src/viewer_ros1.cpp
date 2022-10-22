@@ -90,6 +90,7 @@ void Viewer::eventMsg(const EventArray::ConstPtr & msg)
     return;
   }
   // decode will produce callbacks to imageUpdater_
+  decoder->setTimeBase(msg->time_base);
   decoder->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
 }
 

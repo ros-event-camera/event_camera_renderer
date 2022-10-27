@@ -84,7 +84,7 @@ void Viewer::eventMsg(const EventArray::ConstPtr & msg)
       startNewImage();
     }
   }
-  auto decoder = decoderFactory_.getInstance(msg->encoding);
+  auto decoder = decoderFactory_.getInstance(msg->encoding, msg->width, msg->height);
   if (!decoder) {
     ROS_INFO_STREAM("invalid encoding: " << msg->encoding);
     return;

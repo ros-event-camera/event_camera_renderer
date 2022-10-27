@@ -105,7 +105,7 @@ void Viewer::eventMsg(EventArray::ConstSharedPtr msg)
       startNewImage();
     }
   }
-  auto decoder = decoderFactory_.getInstance(msg->encoding);
+  auto decoder = decoderFactory_.getInstance(msg->encoding, msg->width, msg->height);
   if (!decoder) {
     std::cout << "invalid encoding: " << msg->encoding << std::endl;
     return;

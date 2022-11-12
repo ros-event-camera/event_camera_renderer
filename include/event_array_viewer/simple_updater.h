@@ -13,29 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_ARRAY_VIEWER__IMAGE_UPDATER_H_
-#define EVENT_ARRAY_VIEWER__IMAGE_UPDATER_H_
+#ifndef EVENT_ARRAY_VIEWER__SIMPLE_UPDATER_H_
+#define EVENT_ARRAY_VIEWER__SIMPLE_UPDATER_H_
 
 #include <memory>
 #include <mutex>
 #ifdef USING_ROS_1
 #include <sensor_msgs/Image.h>
+typedef std::unique_ptr<sensor_msgs::Image> ImgPtr;
 #else
 #include <sensor_msgs/msg/image.hpp>
+using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
 #endif
 
 #include <event_array_codecs/event_processor.h>
 
 namespace event_array_viewer
 {
-class ImageUpdater : public event_array_codecs::EventProcessor
+class SimpleUpdater : public event_array_codecs::EventProcessor
 {
 public:
-#ifdef USING_ROS_1
-  typedef std::unique_ptr<sensor_msgs::Image> ImgPtr;
-#else
-  using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
-#endif
   // ---------- inherited from EventProcessor
   inline void eventCD(uint64_t, uint16_t ex, uint16_t ey, uint8_t polarity) override
   {
@@ -51,7 +48,7 @@ public:
   // note: returns reference to pointer to allow for std::move()
   inline ImgPtr getImage() { return (std::move(img_)); }
   // check if currently building an image
-  inline bool hasImage() { return (img_ != nullptr); }
+  inline bool hasImage() const { return (img_ != nullptr); }
 
   // deallocate memory associated with pointer
   inline void resetImagePtr() { img_.reset(); }
@@ -63,4 +60,4 @@ private:
   ImgPtr img_;
 };
 }  // namespace event_array_viewer
-#endif  // EVENT_ARRAY_VIEWER__IMAGE_UPDATER_H_
+#endif  // EVENT_ARRAY_VIEWER__SIMPLE_UPDATER_H_

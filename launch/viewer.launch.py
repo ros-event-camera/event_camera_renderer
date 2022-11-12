@@ -32,6 +32,7 @@ def launch_setup(context, *args, **kwargs):
                 # prefix=['xterm -e gdb -ex run --args'],
                 name=cam_str + '_viewer',
                 parameters=[{'fps': LaunchConfig('fps'),
+                             'display_type': LaunchConfig('type'),
                              'use_sim_time': LaunchConfig('use_sim_time')}],
                 remappings=[
                     ('~/events', cam_str + '/events')])
@@ -47,5 +48,7 @@ def generate_launch_description():
                   description='frame rate'),
         LaunchArg('use_sim_time', default_value='False',
                   description='use_sim_time'),
+        LaunchArg('type', default_value='time_slice',
+                  description='display type (time_slice or sharp)'),
         OpaqueFunction(function=launch_setup)
         ])

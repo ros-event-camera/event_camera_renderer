@@ -28,6 +28,13 @@ Viewer::Viewer(const rclcpp::NodeOptions & options)
     "event_array_viewer",
     rclcpp::NodeOptions(options).automatically_declare_parameters_from_overrides(true))
 {
+  std::string displayType;
+  this->get_parameter_or("display_type", displayType, std::string("time_slice"));
+  display_ = Display::newInstance(displayType);
+  if (!display_) {
+    RCLCPP_ERROR_STREAM(this->get_logger(), "invalid display type: " << displayType);
+    throw std::runtime_error("invalid display type!");
+  }
   double fps;
   this->get_parameter_or("fps", fps, 25.0);
   sliceTime_ = 1.0 / fps;
@@ -57,7 +64,7 @@ void Viewer::subscriptionCheckTimerExpired()
   // callbacks when subscribers come and go
   if (imagePub_.getNumSubscribers()) {
     // -------------- subscribers ---------------------
-    if (!imageUpdater_.hasImage()) {
+    if (!display_->hasImage()) {
       // we have subscribers but no image is being updated yet, so start doing so
       startNewImage();
     }
@@ -80,9 +87,9 @@ void Viewer::subscriptionCheckTimerExpired()
       RCLCPP_INFO(this->get_logger(), "unsubscribing from events!");
       eventSub_.reset();
     }
-    if (imageUpdater_.hasImage()) {
+    if (display_->hasImage()) {
       // tell image updater to deallocate image
-      imageUpdater_.resetImagePtr();
+      display_->resetImagePtr();
     }
     if (frameTimer_) {
       // if nobody is listening, stop publishing frames if this is currently happening
@@ -101,26 +108,21 @@ void Viewer::eventMsg(EventArray::ConstSharedPtr msg)
     imageMsgTemplate_.encoding = "bgr8";
     imageMsgTemplate_.is_bigendian = check_endian::isBigEndian();
     imageMsgTemplate_.step = 3 * imageMsgTemplate_.width;
-    if (!imageUpdater_.hasImage()) {
+    if (!display_->hasImage()) {
       startNewImage();
     }
+    display_->initialize(msg->encoding, msg->width, msg->height);
   }
-  auto decoder = decoderFactory_.getInstance(msg->encoding, msg->width, msg->height);
-  if (!decoder) {
-    std::cout << "invalid encoding: " << msg->encoding << std::endl;
-    return;
-  }
-  // decode will produce callbacks to imageUpdater_
-  decoder->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
+  display_->update(&(msg->events[0]), msg->events.size());
 }
 
 void Viewer::frameTimerExpired()
 {
   const rclcpp::Time t = this->get_clock()->now();
   // publish frame if available and somebody listening
-  if (imagePub_.getNumSubscribers() != 0 && imageUpdater_.hasImage()) {
+  if (imagePub_.getNumSubscribers() != 0 && display_->hasImage()) {
     // take memory managent from image updater
-    sensor_msgs::msg::Image::UniquePtr updated_img = imageUpdater_.getImage();
+    sensor_msgs::msg::Image::UniquePtr updated_img = display_->getImage();
     updated_img->header.stamp = t;
     // give memory management to imagePub_
     imagePub_.publish(std::move(updated_img));
@@ -134,7 +136,7 @@ void Viewer::startNewImage()
   if (imageMsgTemplate_.height != 0) {
     sensor_msgs::msg::Image::UniquePtr img(new sensor_msgs::msg::Image(imageMsgTemplate_));
     img->data.resize(img->height * img->step, 0);  // allocate memory and set all bytes to zero
-    imageUpdater_.setImage(&img);                  // event publisher will also render image now
+    display_->setImage(&img);                      // event publisher will also render image now
   }
 }
 

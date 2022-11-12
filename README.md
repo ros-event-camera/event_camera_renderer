@@ -64,9 +64,10 @@ Parameters:
 - ``fps`` Frequency (in hz) at which images are emitted. Default: 25.
 - ``display_type`` Supported types are ``time_slice`` (all events
   between frames are aggregated) or ``sharp`` (number of events is
-  auto-controlled to produce sharp features). This image shows the
-  difference:
-  <img src="images/time_slice_vs_sharp.png" width="300"/>
+  auto-controlled to produce sharp features). Default is
+  ``time_slice``. This image shows the difference (left is sharp,
+  right is time_slice): 
+  <img src="images/time_slice_vs_sharp.png" width="800"/>
 
 ## License
 

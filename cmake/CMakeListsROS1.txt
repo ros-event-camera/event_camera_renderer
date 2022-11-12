@@ -36,7 +36,11 @@ include_directories(
 #
 # --------- viewer library
 #
-add_library(viewer src/viewer_ros1.cpp)
+add_library(viewer
+	src/viewer_ros1.cpp
+	src/display.cpp
+	src/time_slice_display.cpp
+	src/sharp_display.cpp)
 target_link_libraries(viewer ${catkin_LIBRARIES})
 #
 # --------- nodelet

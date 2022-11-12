@@ -24,6 +24,12 @@ namespace event_array_viewer
 namespace ph = std::placeholders;
 Viewer::Viewer(ros::NodeHandle & nh) : nh_(nh)
 {
+  display_ = Display::newInstance(nh_.param<std::string>("display_type", "time_slice"));
+  if (!display_) {
+    ROS_ERROR_STREAM("invalid display type!");
+    throw std::runtime_error("invalid display type!");
+  }
+
   sliceTime_ = 1.0 / nh_.param<double>("fps", 25.0);
   image_transport::ImageTransport it(nh_);
   imagePub_ = it.advertise(
@@ -53,9 +59,9 @@ void Viewer::imageConnectCallback(const image_transport::SingleSubscriberPublish
 
 void Viewer::frameTimerExpired(const ros::TimerEvent &)
 {
-  if (imagePub_.getNumSubscribers() != 0 && imageUpdater_.hasImage()) {
+  if (imagePub_.getNumSubscribers() != 0 && display_->hasImage()) {
     // take memory managent from image updater
-    std::unique_ptr<sensor_msgs::Image> updated_img = imageUpdater_.getImage();
+    std::unique_ptr<sensor_msgs::Image> updated_img = display_->getImage();
     updated_img->header.stamp = ros::Time::now();
     // give memory management to imagePub_
     imagePub_.publish(std::move(updated_img));
@@ -68,7 +74,7 @@ void Viewer::startNewImage()
 {
   std::unique_ptr<sensor_msgs::Image> img(new sensor_msgs::Image(imageMsgTemplate_));
   img->data.resize(img->height * img->step, 0);  // allocate memory and set all bytes to zero
-  imageUpdater_.setImage(&img);                  // event publisher will also render image now
+  display_->setImage(&img);                      // event publisher will also render image now
 }
 
 void Viewer::eventMsg(const EventArray::ConstPtr & msg)
@@ -80,18 +86,12 @@ void Viewer::eventMsg(const EventArray::ConstPtr & msg)
     imageMsgTemplate_.encoding = "bgr8";
     imageMsgTemplate_.is_bigendian = check_endian::isBigEndian();
     imageMsgTemplate_.step = 3 * imageMsgTemplate_.width;
-    if (!imageUpdater_.hasImage()) {
+    if (!display_->hasImage()) {
       startNewImage();
     }
+    display_->initialize(msg->encoding, msg->width, msg->height);
   }
-  auto decoder = decoderFactory_.getInstance(msg->encoding, msg->width, msg->height);
-  if (!decoder) {
-    ROS_INFO_STREAM("invalid encoding: " << msg->encoding);
-    return;
-  }
-  // decode will produce callbacks to imageUpdater_
-  decoder->setTimeBase(msg->time_base);
-  decoder->decode(&(msg->events[0]), msg->events.size(), &imageUpdater_);
+  display_->update(&(msg->events[0]), msg->events.size());
 }
 
 }  // namespace event_array_viewer

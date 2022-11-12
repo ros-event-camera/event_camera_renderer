@@ -26,7 +26,7 @@
 #include <memory>
 #include <string>
 
-#include "event_array_viewer/image_updater.h"
+#include "event_array_viewer/display.h"
 
 namespace event_array_viewer
 {
@@ -45,14 +45,13 @@ private:
 
   // ------------------------  variables ------------------------------
   ros::NodeHandle nh_;
-  ImageUpdater imageUpdater_;  // maintains image
-  ros::Timer frameTimer_;      // fires once per frame
-  double sliceTime_;           // duration of one frame
-  ros::Subscriber eventSub_;   // subscribes to events
+  std::shared_ptr<Display> display_;
+  ros::Timer frameTimer_;     // fires once per frame
+  double sliceTime_;          // duration of one frame
+  ros::Subscriber eventSub_;  // subscribes to events
   bool isSubscribedToEvents_{false};
   image_transport::Publisher imagePub_;
   sensor_msgs::Image imageMsgTemplate_;
-  event_array_codecs::DecoderFactory<ImageUpdater> decoderFactory_;
 };
 }  // namespace event_array_viewer
 #endif  // EVENT_ARRAY_VIEWER__VIEWER_ROS1_H_

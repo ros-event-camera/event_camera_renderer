@@ -59,6 +59,15 @@ ros2 launch event_array_viewer viewer.launch camera:=my_camera
 ros2 run rqt_image_view rqt_image_view
 ```
 
+Parameters:
+
+- ``fps`` Frequency (in hz) at which images are emitted. Default: 25.
+- ``display_type`` Supported types are ``time_slice`` (all events
+  between frames are aggregated) or ``sharp`` (number of events is
+  auto-controlled to produce sharp features). Default is
+  ``time_slice``. This image shows the difference (left is sharp,
+  right is time_slice): 
+  <img src="images/time_slice_vs_sharp.png" width="800"/>
 
 ## License
 

@@ -39,7 +39,10 @@ ament_auto_find_build_dependencies(REQUIRED ${ROS2_DEPENDENCIES})
 #
 # --------- viewer library
 #
-ament_auto_add_library(viewer src/viewer_ros2.cpp)
+ament_auto_add_library(viewer
+	src/viewer_ros2.cpp src/display.cpp
+	src/time_slice_display.cpp src/sharp_display.cpp)
+
 rclcpp_components_register_nodes(viewer "event_array_viewer::Viewer")
 
 #

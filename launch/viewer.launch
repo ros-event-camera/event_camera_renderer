@@ -1,9 +1,11 @@
 <launch>
   <arg name="camera" default="/event_camera"/>
   <arg name="topic" default="events"/>
+  <arg name="type" default="time_slice"/>
   <node pkg="event_array_viewer" type="viewer_node" name="viewer" clear_params="true"
 	output="screen">
     <param name="fps" value="25"/>
+    <param name="display_type" value="$(arg type)"/>
     <remap from="~events" to="$(arg camera)/$(arg topic)"/>
   </node>
 </launch>

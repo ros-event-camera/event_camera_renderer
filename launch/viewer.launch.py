@@ -34,7 +34,7 @@ def launch_setup(context, *args, **kwargs):
                              'display_type': LaunchConfig('type'),
                              'use_sim_time': LaunchConfig('use_sim_time')}],
                 remappings=[('~/events', 'events')]
-    )
+                )
     return [node]
 
 

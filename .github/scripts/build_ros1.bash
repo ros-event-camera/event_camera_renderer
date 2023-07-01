@@ -1,9 +1,7 @@
 #!/bin/bash
-
-package=event_array_viewer
-
 # set up ROS
 distros=('melodic' 'noetic')
+pkg=$1
 
 #
 # probe for the ROS1 distro
@@ -18,10 +16,11 @@ do
     fi
 done
 
-# run wstool to bring in the additional repositories required
-wstool init src ./src/${package}/${package}.rosinstall
+# run vcs tool to bring in the additional repositories required
+cd src
+vcs import < ${pkg}/${pkg}.repos
+cd ..
 
 # build
 catkin config -DCMAKE_BUILD_TYPE=RelWithDebInfo
 catkin build
-

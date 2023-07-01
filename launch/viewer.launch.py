@@ -24,25 +24,24 @@ from launch.actions import OpaqueFunction
 
 def launch_setup(context, *args, **kwargs):
     """Create simple node."""
-    cam_name = LaunchConfig('camera_name')
-    cam_str = cam_name.perform(context)
     node = Node(package='event_array_viewer',
                 executable='viewer_node',
                 output='screen',
+                namespace=LaunchConfig('camera'),
                 # prefix=['xterm -e gdb -ex run --args'],
-                name=cam_str + '_viewer',
+                name="viewer",
                 parameters=[{'fps': LaunchConfig('fps'),
                              'display_type': LaunchConfig('type'),
                              'use_sim_time': LaunchConfig('use_sim_time')}],
-                remappings=[
-                    ('~/events', cam_str + '/events')])
+                remappings=[('~/events', 'events')]
+    )
     return [node]
 
 
 def generate_launch_description():
     """Create simple node by calling opaque function."""
     return launch.LaunchDescription([
-        LaunchArg('camera_name', default_value=['event_camera'],
+        LaunchArg('camera', default_value=['event_camera'],
                   description='camera name'),
         LaunchArg('fps', default_value='25.0',
                   description='frame rate'),

@@ -56,7 +56,7 @@ rqt_image_view
 ROS2:
 ```
 # create rendered ROS image stream from events
-ros2 launch event_array_viewer viewer.launch camera:=event_camera
+ros2 launch event_array_viewer viewer.launch.py camera:=event_camera
 ros2 run rqt_image_view rqt_image_view
 ```
 

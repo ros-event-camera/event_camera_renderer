@@ -24,7 +24,7 @@ from launch.actions import OpaqueFunction
 
 def launch_setup(context, *args, **kwargs):
     """Create simple node."""
-    node = Node(package='event_array_viewer',
+    node = Node(package='event_camera_viewer',
                 executable='viewer_node',
                 output='screen',
                 namespace=LaunchConfig('camera'),

@@ -24,8 +24,8 @@ find_package(ament_cmake_auto REQUIRED)
 set(ROS2_DEPENDENCIES
   "rclcpp"
   "rclcpp_components"
-  "event_array_msgs"
-  "event_array_codecs"
+  "event_camera_msgs"
+  "event_camera_codecs"
   "sensor_msgs"
   "image_transport"
 )
@@ -40,10 +40,10 @@ ament_auto_find_build_dependencies(REQUIRED ${ROS2_DEPENDENCIES})
 # --------- viewer library
 #
 ament_auto_add_library(viewer
-	src/viewer_ros2.cpp src/display.cpp
-	src/time_slice_display.cpp src/sharp_display.cpp)
+  src/viewer_ros2.cpp src/display.cpp
+  src/time_slice_display.cpp src/sharp_display.cpp)
 
-rclcpp_components_register_nodes(viewer "event_array_viewer::Viewer")
+rclcpp_components_register_nodes(viewer "event_camera_viewer::Viewer")
 
 #
 # -------- node
@@ -69,8 +69,7 @@ install(TARGETS
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}/
-  FILES_MATCHING PATTERN "*.py"
-  )
+  FILES_MATCHING PATTERN "*.py")
 
 if(BUILD_TESTING)
   find_package(ament_cmake REQUIRED)

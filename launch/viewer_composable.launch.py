@@ -34,8 +34,8 @@ def launch_setup(context, *args, **kwargs):
             executable='component_container',
             composable_node_descriptions=[
                 ComposableNode(
-                    package='event_array_viewer',
-                    plugin='event_array_viewer::Viewer',
+                    package='event_camera_viewer',
+                    plugin='event_camera_viewer::Viewer',
                     name=cam_str + '_viewer',
                     parameters=[
                         {'fps': 25.0}],

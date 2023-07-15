@@ -1,7 +1,7 @@
-# event_array_viewer
+# event_camera_viewer
 
 This repository holds tools for viewing
-[event_array_msgs](https://github.com/ros-event-camera/event_array_msgs). It
+[event_camera_msgs](https://github.com/ros-event-camera/event_camera_msgs). It
 builds under both ROS1 and ROS2.
 
 ![event_image](images/event_viewer.png)
@@ -17,7 +17,7 @@ Create a ROS workspace, clone this repo, and use ``vcs``
 to pull in the remaining dependencies:
 
 ```
-pkg=event_array_viewer
+pkg=event_camera_viewer
 mkdir -p ~/$pkg/src
 cd ~/$pkg
 git clone https://github.com/ros-event-camera/${pkg}.git src/${pkg}
@@ -49,14 +49,14 @@ under node name ``event_camera``):
 ROS1:
 ```
 # create rendered ROS image stream from events
-roslaunch event_array_viewer viewer.launch camera:=event_camera
+roslaunch event_camera_viewer viewer.launch camera:=event_camera
 rqt_image_view
 ```
 
 ROS2:
 ```
 # create rendered ROS image stream from events
-ros2 launch event_array_viewer viewer.launch.py camera:=event_camera
+ros2 launch event_camera_viewer viewer.launch.py camera:=event_camera
 ros2 run rqt_image_view rqt_image_view
 ```
 

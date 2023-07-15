@@ -13,40 +13,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_ARRAY_VIEWER__VIEWER_ROS2_H_
-#define EVENT_ARRAY_VIEWER__VIEWER_ROS2_H_
+#ifndef EVENT_CAMERA_VIEWER__VIEWER_ROS2_H_
+#define EVENT_CAMERA_VIEWER__VIEWER_ROS2_H_
 
-#include <event_array_msgs/msg/event_array.hpp>
+#include <event_camera_msgs/msg/event_packet.hpp>
 #include <image_transport/image_transport.hpp>
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
 #include <string>
 
-#include "event_array_viewer/display.h"
+#include "event_camera_viewer/display.h"
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 class Viewer : public rclcpp::Node
 {
 public:
-  using EventArray = event_array_msgs::msg::EventArray;
+  using EventPacket = event_camera_msgs::msg::EventPacket;
   explicit Viewer(const rclcpp::NodeOptions & options);
   ~Viewer();
 
 private:
   void frameTimerExpired();
   void subscriptionCheckTimerExpired();
-  void eventMsg(EventArray::ConstSharedPtr msg);
+  void eventMsg(EventPacket::ConstSharedPtr msg);
   void startNewImage();
   // ------------------------  variables ------------------------------
   std::shared_ptr<Display> display_;
   rclcpp::TimerBase::SharedPtr frameTimer_;
   rclcpp::TimerBase::SharedPtr subscriptionCheckTimer_;
   double sliceTime_;  // duration of one frame
-  rclcpp::Subscription<event_array_msgs::msg::EventArray>::SharedPtr eventSub_;
+  rclcpp::Subscription<event_camera_msgs::msg::EventPacket>::SharedPtr eventSub_;
   image_transport::Publisher imagePub_;
   sensor_msgs::msg::Image imageMsgTemplate_;
 };
-}  // namespace event_array_viewer
-#endif  // EVENT_ARRAY_VIEWER__VIEWER_ROS2_H_
+}  // namespace event_camera_viewer
+#endif  // EVENT_CAMERA_VIEWER__VIEWER_ROS2_H_

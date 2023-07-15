@@ -17,31 +17,31 @@ add_compile_options(-Wall -Wextra -pedantic -Werror)
 add_definitions(-DUSING_ROS_1)
 
 find_package(catkin REQUIRED COMPONENTS
-  event_array_msgs
-  event_array_codecs
+  event_camera_msgs
+  event_camera_codecs
   nodelet
   sensor_msgs
   roscpp
-  image_transport
-  )
-  
+  image_transport)
+
 catkin_package()
 
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-)
+  ${catkin_INCLUDE_DIRS})
 
 #
 # --------- viewer library
 #
 add_library(viewer
-	src/viewer_ros1.cpp
-	src/display.cpp
-	src/time_slice_display.cpp
-	src/sharp_display.cpp)
+  src/viewer_ros1.cpp
+  src/display.cpp
+  src/time_slice_display.cpp
+  src/sharp_display.cpp)
+
 target_link_libraries(viewer ${catkin_LIBRARIES})
+
 #
 # --------- nodelet
 #
@@ -65,17 +65,14 @@ install(TARGETS viewer_node
 install(TARGETS viewer viewer_nodelet
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-  )
- 
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+
 install(FILES nodelet_plugins.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 install(DIRECTORY launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  FILES_MATCHING PATTERN "*.launch"
-  )
+  FILES_MATCHING PATTERN "*.launch")
 
 #############
 ## Testing ##

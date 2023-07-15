@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_array_viewer/display.h"
+#include "event_camera_viewer/display.h"
 
-#include "event_array_viewer/sharp_display.h"
-#include "event_array_viewer/time_slice_display.h"
+#include "event_camera_viewer/sharp_display.h"
+#include "event_camera_viewer/time_slice_display.h"
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 std::shared_ptr<Display> Display::newInstance(const std::string & type)
 {
@@ -30,4 +30,4 @@ std::shared_ptr<Display> Display::newInstance(const std::string & type)
   }
   return (0);
 }
-}  // namespace event_array_viewer
+}  // namespace event_camera_viewer

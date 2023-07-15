@@ -15,7 +15,7 @@
 
 #include <ros/ros.h>
 
-#include "event_array_viewer/viewer_ros1.h"
+#include "event_camera_viewer/viewer_ros1.h"
 
 int main(int argc, char ** argv)
 {
@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
   ros::NodeHandle pnh("~");
 
   try {
-    event_array_viewer::Viewer node(pnh);
+    event_camera_viewer::Viewer node(pnh);
     ros::spin();
   } catch (const std::exception & e) {
     ROS_ERROR("%s: %s", pnh.getNamespace().c_str(), e.what());

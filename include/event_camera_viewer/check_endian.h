@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_ARRAY_VIEWER__CHECK_ENDIAN_H_
-#define EVENT_ARRAY_VIEWER__CHECK_ENDIAN_H_
+#ifndef EVENT_CAMERA_VIEWER__CHECK_ENDIAN_H_
+#define EVENT_CAMERA_VIEWER__CHECK_ENDIAN_H_
 
 #include <stdint.h>
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 namespace check_endian
 {
@@ -32,5 +32,5 @@ inline constexpr bool isBigEndian()
   return (combined_int.c[0] == 1);
 }
 }  // namespace check_endian
-}  // namespace event_array_viewer
-#endif  // EVENT_ARRAY_VIEWER__CHECK_ENDIAN_H_
+}  // namespace event_camera_viewer
+#endif  // EVENT_CAMERA_VIEWER__CHECK_ENDIAN_H_

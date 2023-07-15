@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_ARRAY_VIEWER__SIMPLE_UPDATER_H_
-#define EVENT_ARRAY_VIEWER__SIMPLE_UPDATER_H_
+#ifndef EVENT_CAMERA_VIEWER__SIMPLE_UPDATER_H_
+#define EVENT_CAMERA_VIEWER__SIMPLE_UPDATER_H_
 
 #include <memory>
 #include <mutex>
@@ -26,11 +26,11 @@ typedef std::unique_ptr<sensor_msgs::Image> ImgPtr;
 using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
 #endif
 
-#include <event_array_codecs/event_processor.h>
+#include <event_camera_codecs/event_processor.h>
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
-class SimpleUpdater : public event_array_codecs::EventProcessor
+class SimpleUpdater : public event_camera_codecs::EventProcessor
 {
 public:
   // ---------- inherited from EventProcessor
@@ -59,5 +59,5 @@ public:
 private:
   ImgPtr img_;
 };
-}  // namespace event_array_viewer
-#endif  // EVENT_ARRAY_VIEWER__SIMPLE_UPDATER_H_
+}  // namespace event_camera_viewer
+#endif  // EVENT_CAMERA_VIEWER__SIMPLE_UPDATER_H_

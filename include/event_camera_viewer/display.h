@@ -13,19 +13,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_ARRAY_VIEWER__DISPLAY_H_
-#define EVENT_ARRAY_VIEWER__DISPLAY_H_
+#ifndef EVENT_CAMERA_VIEWER__DISPLAY_H_
+#define EVENT_CAMERA_VIEWER__DISPLAY_H_
 
 #include <memory>
 #ifdef USING_ROS_1
+#include <event_camera_msgs/EventPacket.h>
 #include <sensor_msgs/Image.h>
+using EventPacket = event_camera_msgs::EventPacket;
 typedef std::unique_ptr<sensor_msgs::Image> ImgPtr;
 #else
+#include <event_camera_msgs/msg/event_packet.hpp>
 #include <sensor_msgs/msg/image.hpp>
+using EventPacket = event_camera_msgs::msg::EventPacket;
 using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
 #endif
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 class Display
 {
@@ -43,5 +47,5 @@ public:
 protected:
   Display() {}
 };
-}  // namespace event_array_viewer
-#endif  // EVENT_ARRAY_VIEWER__DISPLAY_H_
+}  // namespace event_camera_viewer
+#endif  // EVENT_CAMERA_VIEWER__DISPLAY_H_

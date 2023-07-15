@@ -16,12 +16,12 @@
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
 
-#include "event_array_viewer/viewer_ros2.h"
+#include "event_camera_viewer/viewer_ros2.h"
 
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
-  auto node = std::make_shared<event_array_viewer::Viewer>(rclcpp::NodeOptions());
+  auto node = std::make_shared<event_camera_viewer::Viewer>(rclcpp::NodeOptions());
   RCLCPP_INFO(node->get_logger(), "viewer_node started up!");
   // actually run the node
   rclcpp::spin(node);  // should not return

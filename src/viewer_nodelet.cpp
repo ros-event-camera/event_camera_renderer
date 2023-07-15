@@ -18,9 +18,9 @@
 
 #include <memory>
 
-#include "event_array_viewer/viewer_ros1.h"
+#include "event_camera_viewer/viewer_ros1.h"
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 class ViewerNodelet : public nodelet::Nodelet
 {
@@ -36,7 +36,7 @@ private:
   std::shared_ptr<Viewer> viewer_;
   ros::NodeHandle nh_;
 };
-}  // namespace event_array_viewer
+}  // namespace event_camera_viewer
 
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(event_array_viewer::ViewerNodelet, nodelet::Nodelet)
+PLUGINLIB_EXPORT_CLASS(event_camera_viewer::ViewerNodelet, nodelet::Nodelet)

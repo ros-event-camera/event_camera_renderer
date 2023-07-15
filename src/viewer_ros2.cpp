@@ -13,19 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_array_viewer/viewer_ros2.h"
+#include "event_camera_viewer/viewer_ros2.h"
 
-#include <event_array_msgs/msg/event_array.hpp>
+#include <event_camera_msgs/msg/event_packet.hpp>
 #include <rclcpp_components/register_node_macro.hpp>
 #include <vector>
 
-#include "event_array_viewer/check_endian.h"
+#include "event_camera_viewer/check_endian.h"
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 Viewer::Viewer(const rclcpp::NodeOptions & options)
 : Node(
-    "event_array_viewer",
+    "event_camera_viewer",
     rclcpp::NodeOptions(options).automatically_declare_parameters_from_overrides(true))
 {
   std::string displayType;
@@ -72,7 +72,7 @@ void Viewer::subscriptionCheckTimerExpired()
       RCLCPP_INFO(this->get_logger(), "subscribing to events!");
       const int qsize = 1000;
       auto qos = rclcpp::QoS(rclcpp::KeepLast(qsize)).best_effort().durability_volatile();
-      eventSub_ = this->create_subscription<event_array_msgs::msg::EventArray>(
+      eventSub_ = this->create_subscription<event_camera_msgs::msg::EventPacket>(
         "~/events", qos, std::bind(&Viewer::eventMsg, this, std::placeholders::_1));
     }
     if (!frameTimer_) {
@@ -99,7 +99,7 @@ void Viewer::subscriptionCheckTimerExpired()
   }
 }
 
-void Viewer::eventMsg(EventArray::ConstSharedPtr msg)
+void Viewer::eventMsg(EventPacket::ConstSharedPtr msg)
 {
   if (imageMsgTemplate_.height == 0) {
     imageMsgTemplate_.header = msg->header;
@@ -140,6 +140,6 @@ void Viewer::startNewImage()
   }
 }
 
-}  // namespace event_array_viewer
+}  // namespace event_camera_viewer
 
-RCLCPP_COMPONENTS_REGISTER_NODE(event_array_viewer::Viewer)
+RCLCPP_COMPONENTS_REGISTER_NODE(event_camera_viewer::Viewer)

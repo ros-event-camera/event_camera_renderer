@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_array_viewer/viewer_ros1.h"
+#include "event_camera_viewer/viewer_ros1.h"
 
-#include <event_array_codecs/decoder.h>
+#include <event_camera_codecs/decoder.h>
 
-#include "event_array_viewer/check_endian.h"
+#include "event_camera_viewer/check_endian.h"
 
-namespace event_array_viewer
+namespace event_camera_viewer
 {
 namespace ph = std::placeholders;
 Viewer::Viewer(ros::NodeHandle & nh) : nh_(nh)
@@ -77,7 +77,7 @@ void Viewer::startNewImage()
   display_->setImage(&img);                      // event publisher will also render image now
 }
 
-void Viewer::eventMsg(const EventArray::ConstPtr & msg)
+void Viewer::eventMsg(const EventPacket::ConstPtr & msg)
 {
   if (imageMsgTemplate_.height == 0) {
     imageMsgTemplate_.header = msg->header;
@@ -94,4 +94,4 @@ void Viewer::eventMsg(const EventArray::ConstPtr & msg)
   display_->update(&(msg->events[0]), msg->events.size());
 }
 
-}  // namespace event_array_viewer
+}  // namespace event_camera_viewer

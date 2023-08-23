@@ -15,15 +15,15 @@
 
 #include <ros/ros.h>
 
-#include "event_camera_viewer/viewer_ros1.h"
+#include "event_camera_renderer/renderer_ros1.h"
 
 int main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "viewer_node");
+  ros::init(argc, argv, "renderer_node");
   ros::NodeHandle pnh("~");
 
   try {
-    event_camera_viewer::Viewer node(pnh);
+    event_camera_renderer::Renderer node(pnh);
     ros::spin();
   } catch (const std::exception & e) {
     ROS_ERROR("%s: %s", pnh.getNamespace().c_str(), e.what());

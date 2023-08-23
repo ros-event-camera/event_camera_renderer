@@ -13,16 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_camera_viewer/viewer_ros1.h"
+#include "event_camera_renderer/renderer_ros1.h"
 
 #include <event_camera_codecs/decoder.h>
 
-#include "event_camera_viewer/check_endian.h"
+#include "event_camera_renderer/check_endian.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 namespace ph = std::placeholders;
-Viewer::Viewer(ros::NodeHandle & nh) : nh_(nh)
+Renderer::Renderer(ros::NodeHandle & nh) : nh_(nh)
 {
   display_ = Display::newInstance(nh_.param<std::string>("display_type", "time_slice"));
   if (!display_) {
@@ -33,19 +33,19 @@ Viewer::Viewer(ros::NodeHandle & nh) : nh_(nh)
   sliceTime_ = 1.0 / nh_.param<double>("fps", 25.0);
   image_transport::ImageTransport it(nh_);
   imagePub_ = it.advertise(
-    "image_raw", 1, boost::bind(&Viewer::imageConnectCallback, this, boost::placeholders::_1),
-    boost::bind(&Viewer::imageConnectCallback, this, boost::placeholders::_1));
+    "image_raw", 1, boost::bind(&Renderer::imageConnectCallback, this, boost::placeholders::_1),
+    boost::bind(&Renderer::imageConnectCallback, this, boost::placeholders::_1));
   imageMsgTemplate_.height = 0;
 }
 
-Viewer::~Viewer() { frameTimer_.stop(); }
+Renderer::~Renderer() { frameTimer_.stop(); }
 
-void Viewer::imageConnectCallback(const image_transport::SingleSubscriberPublisher &)
+void Renderer::imageConnectCallback(const image_transport::SingleSubscriberPublisher &)
 {
   if (imagePub_.getNumSubscribers() != 0) {
     if (!isSubscribedToEvents_) {
-      frameTimer_ = nh_.createTimer(ros::Duration(sliceTime_), &Viewer::frameTimerExpired, this);
-      eventSub_ = nh_.subscribe("events", 1000 /*qsize */, &Viewer::eventMsg, this);
+      frameTimer_ = nh_.createTimer(ros::Duration(sliceTime_), &Renderer::frameTimerExpired, this);
+      eventSub_ = nh_.subscribe("events", 1000 /*qsize */, &Renderer::eventMsg, this);
       isSubscribedToEvents_ = true;
     }
   } else {
@@ -57,7 +57,7 @@ void Viewer::imageConnectCallback(const image_transport::SingleSubscriberPublish
   }
 }
 
-void Viewer::frameTimerExpired(const ros::TimerEvent &)
+void Renderer::frameTimerExpired(const ros::TimerEvent &)
 {
   if (imagePub_.getNumSubscribers() != 0 && display_->hasImage()) {
     // take memory managent from image updater
@@ -70,14 +70,14 @@ void Viewer::frameTimerExpired(const ros::TimerEvent &)
   }
 }
 
-void Viewer::startNewImage()
+void Renderer::startNewImage()
 {
   std::unique_ptr<sensor_msgs::Image> img(new sensor_msgs::Image(imageMsgTemplate_));
   img->data.resize(img->height * img->step, 0);  // allocate memory and set all bytes to zero
   display_->setImage(&img);                      // event publisher will also render image now
 }
 
-void Viewer::eventMsg(const EventPacket::ConstPtr & msg)
+void Renderer::eventMsg(const EventPacket::ConstPtr & msg)
 {
   if (imageMsgTemplate_.height == 0) {
     imageMsgTemplate_.header = msg->header;
@@ -94,4 +94,4 @@ void Viewer::eventMsg(const EventPacket::ConstPtr & msg)
   display_->update(&(msg->events[0]), msg->events.size());
 }
 
-}  // namespace event_camera_viewer
+}  // namespace event_camera_renderer

@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__VIEWER_ROS2_H_
-#define EVENT_CAMERA_VIEWER__VIEWER_ROS2_H_
+#ifndef EVENT_CAMERA_RENDERER__RENDERER_ROS2_H_
+#define EVENT_CAMERA_RENDERER__RENDERER_ROS2_H_
 
 #include <event_camera_msgs/msg/event_packet.hpp>
 #include <image_transport/image_transport.hpp>
@@ -23,16 +23,16 @@
 #include <sensor_msgs/msg/image.hpp>
 #include <string>
 
-#include "event_camera_viewer/display.h"
+#include "event_camera_renderer/display.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
-class Viewer : public rclcpp::Node
+class Renderer : public rclcpp::Node
 {
 public:
   using EventPacket = event_camera_msgs::msg::EventPacket;
-  explicit Viewer(const rclcpp::NodeOptions & options);
-  ~Viewer();
+  explicit Renderer(const rclcpp::NodeOptions & options);
+  ~Renderer();
 
 private:
   void frameTimerExpired();
@@ -48,5 +48,5 @@ private:
   image_transport::Publisher imagePub_;
   sensor_msgs::msg::Image imageMsgTemplate_;
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__VIEWER_ROS2_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__RENDERER_ROS2_H_

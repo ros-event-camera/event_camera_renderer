@@ -1,9 +1,9 @@
-<library path="lib/libviewer_nodelet">
-  <class name="event_camera_viewer/ViewerNodelet"
-         type="event_camera_viewer::ViewerNodelet"
+<library path="lib/librenderer_nodelet">
+  <class name="event_camera_renderer/RendererNodelet"
+         type="event_camera_renderer::RendererNodelet"
          base_class_type="nodelet::Nodelet">
     <description>
-      viewer for event_camera_msgs
+      renderer for event_camera_msgs
     </description>
   </class>
 </library>

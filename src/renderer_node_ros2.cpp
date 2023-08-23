@@ -13,24 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__CHECK_ENDIAN_H_
-#define EVENT_CAMERA_VIEWER__CHECK_ENDIAN_H_
+#include <memory>
+#include <rclcpp/rclcpp.hpp>
 
-#include <stdint.h>
+#include "event_camera_renderer/renderer_ros2.h"
 
-namespace event_camera_viewer
+int main(int argc, char ** argv)
 {
-namespace check_endian
-{
-// check endianness
-inline constexpr bool isBigEndian()
-{
-  const union {
-    uint32_t i;
-    char c[4];
-  } combined_int = {0x01020304};  // from stackoverflow
-  return (combined_int.c[0] == 1);
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<event_camera_renderer::Renderer>(rclcpp::NodeOptions());
+  RCLCPP_INFO(node->get_logger(), "renderer_node started up!");
+  // actually run the node
+  rclcpp::spin(node);  // should not return
+  rclcpp::shutdown();
+  return 0;
 }
-}  // namespace check_endian
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__CHECK_ENDIAN_H_

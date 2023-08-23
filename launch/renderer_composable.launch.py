@@ -25,34 +25,33 @@ from launch.actions import OpaqueFunction
 
 def launch_setup(context, *args, **kwargs):
     """Create composable node."""
-    cam_name = LaunchConfig('camera_name')
+    cam_name = LaunchConfig("camera_name")
     cam_str = cam_name.perform(context)
     container = ComposableNodeContainer(
-            name='event_viewer',
-            namespace='',
-            package='rclcpp_components',
-            executable='component_container',
-            composable_node_descriptions=[
-                ComposableNode(
-                    package='event_camera_viewer',
-                    plugin='event_camera_viewer::Viewer',
-                    name=cam_str + '_viewer',
-                    parameters=[
-                        {'fps': 25.0}],
-                    remappings=[
-                        ('~/events', cam_str + '/events')],
-                    extra_arguments=[{'use_intra_process_comms': True}],
-                )
-            ],
-            output='screen',
+        name="event_renderer",
+        namespace="",
+        package="rclcpp_components",
+        executable="component_container",
+        composable_node_descriptions=[
+            ComposableNode(
+                package="event_camera_renderer",
+                plugin="event_camera_renderer::Renderer",
+                name=cam_str + "_renderer",
+                parameters=[{"fps": 25.0}],
+                remappings=[("~/events", cam_str + "/events")],
+                extra_arguments=[{"use_intra_process_comms": True}],
+            )
+        ],
+        output="screen",
     )
     return [container]
 
 
 def generate_launch_description():
     """Create composable node by calling opaque function."""
-    return launch.LaunchDescription([
-        LaunchArg('camera_name', default_value=['event_camera'],
-                  description='camera name'),
-        OpaqueFunction(function=launch_setup)
-        ])
+    return launch.LaunchDescription(
+        [
+            LaunchArg("camera_name", default_value=["event_camera"], description="camera name"),
+            OpaqueFunction(function=launch_setup),
+        ]
+    )

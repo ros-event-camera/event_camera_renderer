@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__VIEWER_ROS1_H_
-#define EVENT_CAMERA_VIEWER__VIEWER_ROS1_H_
+#ifndef EVENT_CAMERA_RENDERER__RENDERER_ROS1_H_
+#define EVENT_CAMERA_RENDERER__RENDERER_ROS1_H_
 
 #include <event_camera_codecs/decoder.h>
 #include <event_camera_codecs/decoder_factory.h>
@@ -26,16 +26,16 @@
 #include <memory>
 #include <string>
 
-#include "event_camera_viewer/display.h"
+#include "event_camera_renderer/display.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
-class Viewer
+class Renderer
 {
 public:
   using EventPacket = event_camera_msgs::EventPacket;
-  explicit Viewer(ros::NodeHandle & nh);
-  ~Viewer();
+  explicit Renderer(ros::NodeHandle & nh);
+  ~Renderer();
 
 private:
   void frameTimerExpired(const ros::TimerEvent &);
@@ -53,5 +53,5 @@ private:
   image_transport::Publisher imagePub_;
   sensor_msgs::Image imageMsgTemplate_;
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__VIEWER_ROS1_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__RENDERER_ROS1_H_

@@ -24,30 +24,37 @@ from launch.actions import OpaqueFunction
 
 def launch_setup(context, *args, **kwargs):
     """Create simple node."""
-    node = Node(package='event_camera_viewer',
-                executable='viewer_node',
-                output='screen',
-                namespace=LaunchConfig('camera'),
-                # prefix=['xterm -e gdb -ex run --args'],
-                name="viewer",
-                parameters=[{'fps': LaunchConfig('fps'),
-                             'display_type': LaunchConfig('type'),
-                             'use_sim_time': LaunchConfig('use_sim_time')}],
-                remappings=[('~/events', 'events')]
-                )
+    node = Node(
+        package="event_camera_renderer",
+        executable="renderer_node",
+        output="screen",
+        namespace=LaunchConfig("camera"),
+        # prefix=['xterm -e gdb -ex run --args'],
+        name="renderer",
+        parameters=[
+            {
+                "fps": LaunchConfig("fps"),
+                "display_type": LaunchConfig("type"),
+                "use_sim_time": LaunchConfig("use_sim_time"),
+            }
+        ],
+        remappings=[("~/events", "events")],
+    )
     return [node]
 
 
 def generate_launch_description():
     """Create simple node by calling opaque function."""
-    return launch.LaunchDescription([
-        LaunchArg('camera', default_value=['event_camera'],
-                  description='camera name'),
-        LaunchArg('fps', default_value='25.0',
-                  description='frame rate'),
-        LaunchArg('use_sim_time', default_value='False',
-                  description='use_sim_time'),
-        LaunchArg('type', default_value='time_slice',
-                  description='display type (time_slice or sharp)'),
-        OpaqueFunction(function=launch_setup)
-        ])
+    return launch.LaunchDescription(
+        [
+            LaunchArg("camera", default_value=["event_camera"], description="camera name"),
+            LaunchArg("fps", default_value="25.0", description="frame rate"),
+            LaunchArg("use_sim_time", default_value="False", description="use_sim_time"),
+            LaunchArg(
+                "type",
+                default_value="time_slice",
+                description="display type (time_slice or sharp)",
+            ),
+            OpaqueFunction(function=launch_setup),
+        ]
+    )

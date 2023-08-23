@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__SHARP_UPDATER_H_
-#define EVENT_CAMERA_VIEWER__SHARP_UPDATER_H_
+#ifndef EVENT_CAMERA_RENDERER__SHARP_UPDATER_H_
+#define EVENT_CAMERA_RENDERER__SHARP_UPDATER_H_
 
 #include <memory.h>
 
@@ -30,7 +30,7 @@ using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
 
 #include <event_camera_codecs/event_processor.h>
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 class SharpUpdater : public event_camera_codecs::EventProcessor
 {
@@ -154,5 +154,5 @@ private:
   uint32_t numOccupiedPixels_{0};  // currently occupied number of pixels
   uint32_t numOccupiedBlocks_{0};  // currently occupied number of blocks
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__SHARP_UPDATER_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__SHARP_UPDATER_H_

@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__DISPLAY_H_
-#define EVENT_CAMERA_VIEWER__DISPLAY_H_
+#ifndef EVENT_CAMERA_RENDERER__DISPLAY_H_
+#define EVENT_CAMERA_RENDERER__DISPLAY_H_
 
 #include <memory>
 #ifdef USING_ROS_1
@@ -29,7 +29,7 @@ using EventPacket = event_camera_msgs::msg::EventPacket;
 using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
 #endif
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 class Display
 {
@@ -47,5 +47,5 @@ public:
 protected:
   Display() {}
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__DISPLAY_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__DISPLAY_H_

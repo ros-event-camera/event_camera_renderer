@@ -32,37 +32,37 @@ include_directories(
   ${catkin_INCLUDE_DIRS})
 
 #
-# --------- viewer library
+# --------- renderer library
 #
-add_library(viewer
-  src/viewer_ros1.cpp
+add_library(renderer
+  src/renderer_ros1.cpp
   src/display.cpp
   src/time_slice_display.cpp
   src/sharp_display.cpp)
 
-target_link_libraries(viewer ${catkin_LIBRARIES})
+target_link_libraries(renderer ${catkin_LIBRARIES})
 
 #
 # --------- nodelet
 #
-add_library(viewer_nodelet src/viewer_nodelet.cpp)
-target_link_libraries(viewer_nodelet ${catkin_LIBRARIES})
+add_library(renderer_nodelet src/renderer_nodelet.cpp)
+target_link_libraries(renderer_nodelet ${catkin_LIBRARIES})
 
 #
 # -------- node
 #
-add_executable(viewer_node src/viewer_node_ros1.cpp)
-target_link_libraries(viewer_node viewer ${catkin_LIBRARIES})
+add_executable(renderer_node src/renderer_node_ros1.cpp)
+target_link_libraries(renderer_node renderer ${catkin_LIBRARIES})
 
 
 #############
 ## Install ##
 #############
 
-install(TARGETS viewer_node
+install(TARGETS renderer_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-install(TARGETS viewer viewer_nodelet
+install(TARGETS renderer renderer_nodelet
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})

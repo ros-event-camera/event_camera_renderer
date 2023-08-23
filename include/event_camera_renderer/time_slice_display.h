@@ -13,15 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__TIME_SLICE_DISPLAY_H_
-#define EVENT_CAMERA_VIEWER__TIME_SLICE_DISPLAY_H_
+#ifndef EVENT_CAMERA_RENDERER__TIME_SLICE_DISPLAY_H_
+#define EVENT_CAMERA_RENDERER__TIME_SLICE_DISPLAY_H_
 
 #include <event_camera_codecs/decoder_factory.h>
 
-#include "event_camera_viewer/display.h"
-#include "event_camera_viewer/simple_updater.h"
+#include "event_camera_renderer/display.h"
+#include "event_camera_renderer/simple_updater.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 class TimeSliceDisplay : public Display
 {
@@ -41,5 +41,5 @@ private:
   event_camera_codecs::Decoder<EventPacket, SimpleUpdater> * decoder_;
   event_camera_codecs::DecoderFactory<EventPacket, SimpleUpdater> decoderFactory_;
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__TIME_SLICE_DISPLAY_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__TIME_SLICE_DISPLAY_H_

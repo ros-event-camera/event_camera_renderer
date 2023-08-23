@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>event_camera_viewer</name>
+  <name>event_camera_renderer</name>
   <version>1.0.0</version>
-  <description>package to view event_camera_msgs</description>
+  <description>package for rendering event_camera_msgs</description>
   <maintainer email="bernd.pfrommer@gmail.com">Bernd Pfrommer</maintainer>
   <license>Apache2</license>
 

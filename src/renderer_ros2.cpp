@@ -13,19 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_camera_viewer/viewer_ros2.h"
+#include "event_camera_renderer/renderer_ros2.h"
 
 #include <event_camera_msgs/msg/event_packet.hpp>
 #include <rclcpp_components/register_node_macro.hpp>
 #include <vector>
 
-#include "event_camera_viewer/check_endian.h"
+#include "event_camera_renderer/check_endian.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
-Viewer::Viewer(const rclcpp::NodeOptions & options)
+Renderer::Renderer(const rclcpp::NodeOptions & options)
 : Node(
-    "event_camera_viewer",
+    "event_camera_renderer",
     rclcpp::NodeOptions(options).automatically_declare_parameters_from_overrides(true))
 {
   std::string displayType;
@@ -45,10 +45,10 @@ Viewer::Viewer(const rclcpp::NodeOptions & options)
   // must check by polling
   subscriptionCheckTimer_ = rclcpp::create_timer(
     this, get_clock(), rclcpp::Duration(1, 0),
-    std::bind(&Viewer::subscriptionCheckTimerExpired, this));
+    std::bind(&Renderer::subscriptionCheckTimerExpired, this));
 }
 
-Viewer::~Viewer()
+Renderer::~Renderer()
 {
   if (frameTimer_) {
     frameTimer_->cancel();
@@ -58,7 +58,7 @@ Viewer::~Viewer()
   }
 }
 
-void Viewer::subscriptionCheckTimerExpired()
+void Renderer::subscriptionCheckTimerExpired()
 {
   // this silly dance is only necessary because ROS2 at this time does not support
   // callbacks when subscribers come and go
@@ -73,13 +73,13 @@ void Viewer::subscriptionCheckTimerExpired()
       const int qsize = 1000;
       auto qos = rclcpp::QoS(rclcpp::KeepLast(qsize)).best_effort().durability_volatile();
       eventSub_ = this->create_subscription<event_camera_msgs::msg::EventPacket>(
-        "~/events", qos, std::bind(&Viewer::eventMsg, this, std::placeholders::_1));
+        "~/events", qos, std::bind(&Renderer::eventMsg, this, std::placeholders::_1));
     }
     if (!frameTimer_) {
       // start publishing frames if there is interest in either camerainfo or image
       frameTimer_ = rclcpp::create_timer(
         this, get_clock(), rclcpp::Duration::from_seconds(sliceTime_),
-        std::bind(&Viewer::frameTimerExpired, this));
+        std::bind(&Renderer::frameTimerExpired, this));
     }
   } else {
     // -------------- no subscribers -------------------
@@ -99,7 +99,7 @@ void Viewer::subscriptionCheckTimerExpired()
   }
 }
 
-void Viewer::eventMsg(EventPacket::ConstSharedPtr msg)
+void Renderer::eventMsg(EventPacket::ConstSharedPtr msg)
 {
   if (imageMsgTemplate_.height == 0) {
     imageMsgTemplate_.header = msg->header;
@@ -116,7 +116,7 @@ void Viewer::eventMsg(EventPacket::ConstSharedPtr msg)
   display_->update(&(msg->events[0]), msg->events.size());
 }
 
-void Viewer::frameTimerExpired()
+void Renderer::frameTimerExpired()
 {
   const rclcpp::Time t = this->get_clock()->now();
   // publish frame if available and somebody listening
@@ -131,7 +131,7 @@ void Viewer::frameTimerExpired()
   }
 }
 
-void Viewer::startNewImage()
+void Renderer::startNewImage()
 {
   if (imageMsgTemplate_.height != 0) {
     sensor_msgs::msg::Image::UniquePtr img(new sensor_msgs::msg::Image(imageMsgTemplate_));
@@ -140,6 +140,6 @@ void Viewer::startNewImage()
   }
 }
 
-}  // namespace event_camera_viewer
+}  // namespace event_camera_renderer
 
-RCLCPP_COMPONENTS_REGISTER_NODE(event_camera_viewer::Viewer)
+RCLCPP_COMPONENTS_REGISTER_NODE(event_camera_renderer::Renderer)

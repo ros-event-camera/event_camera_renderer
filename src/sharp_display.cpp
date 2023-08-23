@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_camera_viewer/sharp_display.h"
+#include "event_camera_renderer/sharp_display.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 void SharpDisplay::initialize(const std::string & encoding, uint32_t width, uint32_t height)
 {
@@ -31,4 +31,4 @@ void SharpDisplay::update(const uint8_t * events, size_t numEvents)
   // decode will produce callbacks to imageUpdater_
   decoder_->decode(events, numEvents, &imageUpdater_);
 }
-}  // namespace event_camera_viewer
+}  // namespace event_camera_renderer

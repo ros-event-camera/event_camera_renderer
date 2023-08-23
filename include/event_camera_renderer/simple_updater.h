@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__SIMPLE_UPDATER_H_
-#define EVENT_CAMERA_VIEWER__SIMPLE_UPDATER_H_
+#ifndef EVENT_CAMERA_RENDERER__SIMPLE_UPDATER_H_
+#define EVENT_CAMERA_RENDERER__SIMPLE_UPDATER_H_
 
 #include <memory>
 #include <mutex>
@@ -28,7 +28,7 @@ using ImgPtr = sensor_msgs::msg::Image::UniquePtr;
 
 #include <event_camera_codecs/event_processor.h>
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 class SimpleUpdater : public event_camera_codecs::EventProcessor
 {
@@ -59,5 +59,5 @@ public:
 private:
   ImgPtr img_;
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__SIMPLE_UPDATER_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__SIMPLE_UPDATER_H_

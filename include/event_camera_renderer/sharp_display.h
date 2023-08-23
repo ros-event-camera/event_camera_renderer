@@ -13,15 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef EVENT_CAMERA_VIEWER__SHARP_DISPLAY_H_
-#define EVENT_CAMERA_VIEWER__SHARP_DISPLAY_H_
+#ifndef EVENT_CAMERA_RENDERER__SHARP_DISPLAY_H_
+#define EVENT_CAMERA_RENDERER__SHARP_DISPLAY_H_
 
 #include <event_camera_codecs/decoder_factory.h>
 
-#include "event_camera_viewer/display.h"
-#include "event_camera_viewer/sharp_updater.h"
+#include "event_camera_renderer/display.h"
+#include "event_camera_renderer/sharp_updater.h"
 
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
 class SharpDisplay : public Display
 {
@@ -41,5 +41,5 @@ private:
   event_camera_codecs::Decoder<EventPacket, SharpUpdater> * decoder_;
   event_camera_codecs::DecoderFactory<EventPacket, SharpUpdater> decoderFactory_;
 };
-}  // namespace event_camera_viewer
-#endif  // EVENT_CAMERA_VIEWER__SHARP_DISPLAY_H_
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__SHARP_DISPLAY_H_

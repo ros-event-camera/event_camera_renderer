@@ -37,32 +37,32 @@ endforeach()
 ament_auto_find_build_dependencies(REQUIRED ${ROS2_DEPENDENCIES})
 
 #
-# --------- viewer library
+# --------- renderer library
 #
-ament_auto_add_library(viewer
-  src/viewer_ros2.cpp src/display.cpp
+ament_auto_add_library(renderer
+  src/renderer_ros2.cpp src/display.cpp
   src/time_slice_display.cpp src/sharp_display.cpp)
 
-rclcpp_components_register_nodes(viewer "event_camera_viewer::Viewer")
+rclcpp_components_register_nodes(renderer "event_camera_renderer::Renderer")
 
 #
 # -------- node
 #
-ament_auto_add_executable(viewer_node src/viewer_node_ros2.cpp)
-target_link_libraries(viewer_node viewer)
+ament_auto_add_executable(renderer_node src/renderer_node_ros2.cpp)
+target_link_libraries(renderer_node renderer)
 
 # the node must go into the paroject specific lib directory or else
 # the launch file will not find it
 
 install(TARGETS
-  viewer_node
+  renderer_node
   DESTINATION lib/${PROJECT_NAME}/)
 
 # the shared library goes into the global lib dir so it can
 # be used as a composable node by other projects
 
 install(TARGETS
-  viewer
+  renderer
   DESTINATION lib
 )
 

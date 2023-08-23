@@ -13,30 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <nodelet/nodelet.h>
-#include <ros/ros.h>
+#ifndef EVENT_CAMERA_RENDERER__CHECK_ENDIAN_H_
+#define EVENT_CAMERA_RENDERER__CHECK_ENDIAN_H_
 
-#include <memory>
+#include <stdint.h>
 
-#include "event_camera_viewer/viewer_ros1.h"
-
-namespace event_camera_viewer
+namespace event_camera_renderer
 {
-class ViewerNodelet : public nodelet::Nodelet
+namespace check_endian
 {
-public:
-  void onInit() override
-  {
-    nh_ = getPrivateNodeHandle();
-    viewer_ = std::make_shared<Viewer>(nh_);
-  }
-
-private:
-  // ------ variables --------
-  std::shared_ptr<Viewer> viewer_;
-  ros::NodeHandle nh_;
-};
-}  // namespace event_camera_viewer
-
-#include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(event_camera_viewer::ViewerNodelet, nodelet::Nodelet)
+// check endianness
+inline constexpr bool isBigEndian()
+{
+  const union {
+    uint32_t i;
+    char c[4];
+  } combined_int = {0x01020304};  // from stackoverflow
+  return (combined_int.c[0] == 1);
+}
+}  // namespace check_endian
+}  // namespace event_camera_renderer
+#endif  // EVENT_CAMERA_RENDERER__CHECK_ENDIAN_H_

@@ -2,8 +2,8 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.2 (2023-09-21)
+------------------
 * added dependency on ament_cmake_clang_format
 * Contributors: Bernd Pfrommer
 

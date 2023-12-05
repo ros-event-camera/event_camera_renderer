@@ -101,16 +101,17 @@ void Renderer::subscriptionCheckTimerExpired()
 
 void Renderer::eventMsg(EventPacket::ConstSharedPtr msg)
 {
-  if (imageMsgTemplate_.height == 0) {
+  if (
+    imageMsgTemplate_.height != msg->height || imageMsgTemplate_.width != msg->width ||
+    encoding_ != msg->encoding) {
+    encoding_ = msg->encoding;
     imageMsgTemplate_.header = msg->header;
     imageMsgTemplate_.width = msg->width;
     imageMsgTemplate_.height = msg->height;
     imageMsgTemplate_.encoding = "bgr8";
     imageMsgTemplate_.is_bigendian = check_endian::isBigEndian();
     imageMsgTemplate_.step = 3 * imageMsgTemplate_.width;
-    if (!display_->hasImage()) {
-      startNewImage();
-    }
+    startNewImage();
     display_->initialize(msg->encoding, msg->width, msg->height);
   }
   display_->update(&(msg->events[0]), msg->events.size());

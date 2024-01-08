@@ -47,6 +47,7 @@ private:
   rclcpp::Subscription<event_camera_msgs::msg::EventPacket>::SharedPtr eventSub_;
   image_transport::Publisher imagePub_;
   sensor_msgs::msg::Image imageMsgTemplate_;
+  std::string encoding_;  // currently used incoming message encoding
 };
 }  // namespace event_camera_renderer
 #endif  // EVENT_CAMERA_RENDERER__RENDERER_ROS2_H_

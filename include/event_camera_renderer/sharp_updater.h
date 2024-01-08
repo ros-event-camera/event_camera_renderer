@@ -89,8 +89,11 @@ public:
   inline void setImage(ImgPtr * img)
   {
     img_ = std::move(*img);
-    if (sharpImg_.empty()) {
+    if (
+      sharpImg_.empty() || width_ != img_->width || height_ != img_->height ||
+      stride_ != img_->step) {
       // first call, allocate memory
+      sharpImg_.clear();
       sharpImg_.resize(img_->data.size(), 0);
       width_ = img_->width;
       height_ = img_->height;

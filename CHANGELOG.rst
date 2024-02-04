@@ -2,8 +2,8 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.3 (2024-02-04)
+------------------
 * permit variable sensor size
 * change formatting of python files to make flake8 linter happy
 * ignore pyc files

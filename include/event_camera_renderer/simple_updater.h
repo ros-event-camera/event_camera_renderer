@@ -41,8 +41,10 @@ public:
   }
   void eventExtTrigger(uint64_t, uint8_t, uint8_t) override {}
 
+  // clang-format off
   void finished() override{};
   void rawData(const char *, size_t) override{};
+  // clang-format on
   // --------- end of inherited from EventProcessor
 
   // note: returns reference to pointer to allow for std::move()

@@ -2,6 +2,12 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix linter errors on noble
+* updated build instructions
+* Contributors: Bernd Pfrommer
+
 1.0.3 (2024-02-04)
 ------------------
 * permit variable sensor size

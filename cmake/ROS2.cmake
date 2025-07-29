@@ -36,6 +36,10 @@ endforeach()
 
 ament_auto_find_build_dependencies(REQUIRED ${ROS2_DEPENDENCIES})
 
+if(${image_transport_VERSION} VERSION_GREATER_EQUAL "6.3.0")
+  add_definitions(-DIMAGE_TRANSPORT_USE_QOS)
+endif()
+
 #
 # --------- renderer library
 #

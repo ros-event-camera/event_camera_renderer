@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>event_camera_renderer</name>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
   <description>package for rendering event_camera_msgs</description>
   <maintainer email="bernd.pfrommer@gmail.com">Bernd Pfrommer</maintainer>
   <license>Apache2</license>

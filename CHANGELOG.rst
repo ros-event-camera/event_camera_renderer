@@ -2,6 +2,14 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove old ROS2 from CI
+* remove ROS1 from CI
+* support new transport api
+* bumped cmake required
+* Contributors: Bernd Pfrommer
+
 2.0.0 (2025-05-22)
 ------------------
 

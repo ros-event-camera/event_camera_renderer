@@ -2,8 +2,8 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.2 (2025-09-01)
+------------------
 * updated workflow
 * support new image transport node interface
 * Contributors: Bernd Pfrommer

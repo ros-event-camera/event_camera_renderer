@@ -40,12 +40,18 @@ Renderer::Renderer(const rclcpp::NodeOptions & options)
   sliceTime_ = 1.0 / fps;
   imageMsgTemplate_.height = 0;
 #ifdef IMAGE_TRANSPORT_USE_QOS
-  const rclcpp::QoS qos(
-    rclcpp::QoSInitialization::from_rmw(rmw_qos_profile_default), rmw_qos_profile_default);
+  const auto qosProf = rclcpp::SystemDefaultsQoS();
 #else
-  const rmw_qos_profile_t qos = rmw_qos_profile_default;
+  const auto qosProf = rmw_qos_profile_default;
 #endif
-  imagePub_ = image_transport::create_publisher(this, "~/image_raw", qos);
+  imagePub_ = image_transport::create_publisher(
+#ifdef IMAGE_TRANSPORT_USE_NODEINTERFACE
+    *this,
+#else
+    this,
+#endif
+    "~/image_raw", qosProf);
+
   // Since the ROS2 image transport does not call back when subscribers come and go
   // must check by polling
   subscriptionCheckTimer_ = rclcpp::create_timer(

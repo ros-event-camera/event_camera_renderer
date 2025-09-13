@@ -23,7 +23,7 @@ namespace event_camera_renderer
 namespace check_endian
 {
 // check endianness
-inline constexpr bool isBigEndian()
+inline bool isBigEndian()
 {
   const union {
     uint32_t i;

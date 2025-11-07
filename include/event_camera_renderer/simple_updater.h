@@ -39,7 +39,7 @@ public:
     const uint32_t offset = ex * 3 + img_->step * ey + (polarity ? 0 : 2);
     img_->data[offset] = 255;
   }
-  void eventExtTrigger(uint64_t, uint8_t, uint8_t) override {}
+  bool eventExtTrigger(uint64_t, uint8_t, uint8_t) override { return (true); }
 
   // clang-format off
   void finished() override{};

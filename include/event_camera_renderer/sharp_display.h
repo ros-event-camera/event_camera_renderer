@@ -21,6 +21,8 @@
 #include <event_camera_renderer/display.h>
 #include <event_camera_renderer/ros_compat.h>
 
+#include <queue>
+
 namespace event_camera_renderer
 {
 class SharpDisplay : public Display, public event_camera_codecs::EventProcessor

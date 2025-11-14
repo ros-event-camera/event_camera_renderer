@@ -52,15 +52,17 @@ endif()
 # --------- renderer library
 #
 ament_auto_add_library(renderer
-  src/renderer_ros2.cpp src/display.cpp
-  src/time_slice_display.cpp src/sharp_display.cpp)
+  src/renderer.cpp src/display.cpp
+  src/time_slice_display.cpp
+  src/sharp_display.cpp
+  src/ros_compat.cpp)
 
 rclcpp_components_register_nodes(renderer "event_camera_renderer::Renderer")
 
 #
 # -------- node
 #
-ament_auto_add_executable(renderer_node src/renderer_node_ros2.cpp)
+ament_auto_add_executable(renderer_node src/renderer_node.cpp)
 target_link_libraries(renderer_node renderer)
 
 # the node must go into the paroject specific lib directory or else

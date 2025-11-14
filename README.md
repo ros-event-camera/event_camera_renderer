@@ -1,15 +1,14 @@
 # event_camera_renderer
 
 This repository holds tools for rendering
-[event_camera_msgs](https://github.com/ros-event-camera/event_camera_msgs). It
-builds under both ROS1 and ROS2.
+[event_camera_msgs](https://github.com/ros-event-camera/event_camera_msgs).
+It may still build under ROS1, but only ROS2 is tested and supported.
 
 ![event_image](images/event_renderer.png)
 
 ## Supported platforms
 
-Currently tested on Ubuntu 20.04 (ROS Noetic and ROS2 Galactic) and
-Ubuntu 22.04 (ROS2 Humble).
+Continuous integration testing is done for ROS2 Humble and later distros.
 
 ## How to build
 
@@ -26,19 +25,13 @@ Examine the launch file and adjust the topic remapping, frequency
 etc, then start as follows (assuming the camera driver is running
 under node name ``event_camera``):
 
-ROS1:
-```
-# create rendered ROS image stream from events
-roslaunch event_camera_renderer renderer.launch camera:=event_camera
-rqt_image_view
-```
-
-ROS2:
 ```
 # create rendered ROS image stream from events
 ros2 launch event_camera_renderer renderer.launch.py camera:=event_camera
 ros2 run rqt_image_view rqt_image_view
 ```
+Note that when playing back from bag using simulated time, you must
+set the clock rate much higher than ``fps``.
 
 Parameters:
 

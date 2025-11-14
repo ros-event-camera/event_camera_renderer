@@ -1,9 +1,0 @@
-<library path="lib/librenderer_nodelet">
-  <class name="event_camera_renderer/RendererNodelet"
-         type="event_camera_renderer::RendererNodelet"
-         base_class_type="nodelet::Nodelet">
-    <description>
-      renderer for event_camera_msgs
-    </description>
-  </class>
-</library>

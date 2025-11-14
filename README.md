@@ -2,13 +2,13 @@
 
 This repository holds tools for rendering
 [event_camera_msgs](https://github.com/ros-event-camera/event_camera_msgs).
-It may still build under ROS1, but only ROS2 is tested and supported.
 
 ![event_image](images/event_renderer.png)
 
 ## Supported platforms
 
 Continuous integration testing is done for ROS2 Humble and later distros.
+NOTE: ROS1 is no longer supported in any form.
 
 ## How to build
 

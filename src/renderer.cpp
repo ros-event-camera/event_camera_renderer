@@ -133,9 +133,9 @@ void Renderer::subscriptionCheckTimerExpired()
 
 void Renderer::addNewFrame(const FrameTime & ft)
 {
-  if (frames_.size() >= 10000) {
+  if (frames_.size() >= 1000) {
     RCLCPP_WARN_THROTTLE(
-      get_logger(), *get_clock(), 1000, "frames dropped due to frame queue overflow!");
+      get_logger(), *get_clock(), 5000, "frames dropped because no events are received!");
   } else {
     frames_.push_back(ft);
   }

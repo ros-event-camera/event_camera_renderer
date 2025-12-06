@@ -2,6 +2,17 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* updated license string in package.xml
+* better error message when no events are received
+* need include for queue
+* removed remaining ROS1 stuff (except for ros_compat)
+* handle arbitrarily fine time slices now
+* eventExtTrigger() returns true now
+* This pull request resolves a build failure caused by an invalid-constexpr error on modern compilers (like AppleClang).
+* Contributors: Bernd Pfrommer, Dhruv Patel
+
 2.0.2 (2025-09-01)
 ------------------
 * updated workflow

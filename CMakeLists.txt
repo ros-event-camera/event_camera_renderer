@@ -16,14 +16,96 @@
 cmake_minimum_required(VERSION 3.16)
 project(event_camera_renderer)
 
-if(DEFINED ENV{ROS_VERSION})
-  if($ENV{ROS_VERSION} EQUAL "2")
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ROS2.cmake)
-  elseif($ENV{ROS_VERSION} EQUAL "1")
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ROS1.cmake)
-  else()
-    message(SEND_ERROR "invalid ROS_VERSION environment variable: $ENV{ROS_VERSION}")
-  endif()
-else()
-  message(SEND_ERROR "ROS_VERSION environment variable is not set!")
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(ament_cmake_ros REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+
+set(ROS2_DEPENDENCIES
+  "rclcpp"
+  "rclcpp_components"
+  "event_camera_msgs"
+  "event_camera_codecs"
+  "sensor_msgs"
+  "image_transport"
+)
+
+foreach(pkg ${ROS2_DEPENDENCIES})
+  find_package(${pkg} REQUIRED)
+endforeach()
+
+if(${image_transport_VERSION} VERSION_GREATER_EQUAL "6.3.0")
+  add_definitions(-DIMAGE_TRANSPORT_USE_QOS)
 endif()
+
+if(${image_transport_VERSION} VERSION_GREATER_EQUAL "6.4.0")
+  add_definitions(-DIMAGE_TRANSPORT_USE_NODEINTERFACE)
+endif()
+
+ament_auto_find_build_dependencies(REQUIRED ${ROS2_DEPENDENCIES})
+
+if(${image_transport_VERSION} VERSION_GREATER_EQUAL "6.3.0")
+  add_definitions(-DIMAGE_TRANSPORT_USE_QOS)
+endif()
+
+#
+# --------- renderer library
+#
+ament_auto_add_library(renderer
+  src/renderer.cpp src/display.cpp
+  src/time_slice_display.cpp
+  src/sharp_display.cpp
+  src/ros_compat.cpp)
+
+rclcpp_components_register_nodes(renderer "event_camera_renderer::Renderer")
+
+#
+# -------- node
+#
+ament_auto_add_executable(renderer_node src/renderer_node.cpp)
+target_link_libraries(renderer_node renderer)
+
+# the node must go into the paroject specific lib directory or else
+# the launch file will not find it
+
+install(TARGETS
+  renderer_node
+  DESTINATION lib/${PROJECT_NAME}/)
+
+# the shared library goes into the global lib dir so it can
+# be used as a composable node by other projects
+
+install(TARGETS
+  renderer
+  DESTINATION lib
+)
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+  FILES_MATCHING PATTERN "*.py")
+
+if(BUILD_TESTING)
+  find_package(ament_cmake REQUIRED)
+  find_package(ament_cmake_copyright REQUIRED)
+  find_package(ament_cmake_cppcheck REQUIRED)
+  find_package(ament_cmake_cpplint REQUIRED)
+  find_package(ament_cmake_clang_format REQUIRED)
+  find_package(ament_cmake_flake8 REQUIRED)
+  find_package(ament_cmake_lint_cmake REQUIRED)
+  find_package(ament_cmake_pep257 REQUIRED)
+  find_package(ament_cmake_xmllint REQUIRED)
+
+  ament_copyright()
+  ament_cppcheck(LANGUAGE c++)
+  ament_cpplint(FILTERS "-build/include,-runtime/indentation_namespace")
+  ament_clang_format(CONFIG_FILE .clang-format)
+  ament_flake8()
+  ament_lint_cmake()
+  ament_pep257()
+  ament_xmllint()
+endif()
+
+ament_package()

@@ -13,22 +13,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "event_camera_renderer/sharp_display.h"
+#include <event_camera_renderer/sharp_display.h>
 
 namespace event_camera_renderer
 {
-void SharpDisplay::initialize(const std::string & encoding, uint32_t width, uint32_t height)
+void SharpDisplay::initialize(const ros_compat::EventPacket & msg)
 {
-  decoder_ = decoderFactory_.getInstance(encoding, width, height);
+  decoder_ = decoderFactory_.newInstance(msg);
   if (!decoder_) {
-    std::cout << "invalid encoding: " << encoding << std::endl;
+    std::cout << "invalid encoding: " << msg.encoding << std::endl;
     throw std::runtime_error("invalid encoding!");
   }
-}
-
-void SharpDisplay::update(const uint8_t * events, size_t numEvents)
-{
-  // decode will produce callbacks to imageUpdater_
-  decoder_->decode(events, numEvents, &imageUpdater_);
+  // create temporary decoder to find the correspondence between
+  // ros time and sensor time
+  auto tmp_decoder = decoderFactory_.newInstance(msg);
+  uint64_t sensor_time{0};
+  if (tmp_decoder->findFirstSensorTime(msg, &sensor_time)) {
+    Display::updateRosToSensorTimeOffset(
+      ros_compat::Time(msg.header.stamp), static_cast<int64_t>(sensor_time));
+  }
 }
 }  // namespace event_camera_renderer

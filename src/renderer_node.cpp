@@ -13,30 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <nodelet/nodelet.h>
-#include <ros/ros.h>
-
 #include <memory>
+#include <rclcpp/rclcpp.hpp>
 
-#include "event_camera_renderer/renderer_ros1.h"
+#include "event_camera_renderer/renderer.h"
 
-namespace event_camera_renderer
+int main(int argc, char ** argv)
 {
-class RendererNodelet : public nodelet::Nodelet
-{
-public:
-  void onInit() override
-  {
-    nh_ = getPrivateNodeHandle();
-    renderer_ = std::make_shared<Renderer>(nh_);
-  }
-
-private:
-  // ------ variables --------
-  std::shared_ptr<Renderer> renderer_;
-  ros::NodeHandle nh_;
-};
-}  // namespace event_camera_renderer
-
-#include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(event_camera_renderer::RendererNodelet, nodelet::Nodelet)
+  rclcpp::init(argc, argv);
+  auto node = std::make_shared<event_camera_renderer::Renderer>(rclcpp::NodeOptions());
+  // actually run the node
+  rclcpp::spin(node);  // should not return
+  rclcpp::shutdown();
+  return 0;
+}

@@ -2,8 +2,8 @@
 Changelog for package event_camera_renderer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+3.0.0 (2025-12-06)
+------------------
 * updated license string in package.xml
 * better error message when no events are received
 * need include for queue

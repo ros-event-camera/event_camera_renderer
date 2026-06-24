@@ -45,6 +45,12 @@ Parameters:
   ``time_slice``. This image shows the difference (left is sharp,
   right is time_slice): 
   <img src="images/time_slice_vs_sharp.png" width="800"/>
+- ``max_frame_queue`` Maximum number of pending frame slots. When events
+  stop (or the decoder runs slower than real time) frame slots accumulate;
+  once this many are queued, new slots are dropped (the oldest are kept so a
+  slow decoder can still catch up). A high value replays a long backlog when
+  motion resumes (seconds of latency after a quiet period); a low value (e.g.
+  ``3``) keeps latency bounded. Default: 1000 (preserves prior behavior).
 
 ## License
 

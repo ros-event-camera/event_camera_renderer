@@ -80,6 +80,7 @@ private:
   PeriodEstimator framePeriod_;
   int eventQueueMemoryLimit_{0};
   size_t eventQueueMemory_{0};
+  int maxFrameQueue_{1000};  // cap on pending frame slots (bounds post-quiet latency)
 };
 std::ostream & operator<<(std::ostream & os, const Renderer::FrameTime & ft);
 }  // namespace event_camera_renderer

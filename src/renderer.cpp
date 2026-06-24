@@ -55,6 +55,7 @@ Renderer::Renderer(const rclcpp::NodeOptions & options)
     throw std::runtime_error("invalid display type!");
   }
   this->get_parameter_or("event_queue_memory_limit", eventQueueMemoryLimit_, 10 * 1024 * 1024);
+  this->get_parameter_or("max_frame_queue", maxFrameQueue_, 1000);
 
   double fps;
   this->get_parameter_or("fps", fps, 25.0);
@@ -133,9 +134,8 @@ void Renderer::subscriptionCheckTimerExpired()
 
 void Renderer::addNewFrame(const FrameTime & ft)
 {
-  if (frames_.size() >= 1000) {
-    RCLCPP_WARN_THROTTLE(
-      get_logger(), *get_clock(), 5000, "frames dropped because no events are received!");
+  if (frames_.size() >= static_cast<size_t>(maxFrameQueue_)) {
+    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 5000, "frame queue full; dropping new frames");
   } else {
     frames_.push_back(ft);
   }

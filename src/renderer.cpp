@@ -55,10 +55,13 @@ Renderer::Renderer(const rclcpp::NodeOptions & options)
     throw std::runtime_error("invalid display type!");
   }
   this->get_parameter_or("event_queue_memory_limit", eventQueueMemoryLimit_, 10 * 1024 * 1024);
-
   double fps;
   this->get_parameter_or("fps", fps, 25.0);
   sliceTime_ = 1.0 / fps;
+  int maxWaitFrames;
+  this->get_parameter_or("max_wait_frames", maxWaitFrames, 5);
+  maxDelay_ = rclcpp::Duration::from_seconds(sliceTime_ * maxWaitFrames);
+
   imageMsgTemplate_.height = 0;
 #ifdef IMAGE_TRANSPORT_USE_QOS
   const auto qosProf = rclcpp::SystemDefaultsQoS();
@@ -133,12 +136,17 @@ void Renderer::subscriptionCheckTimerExpired()
 
 void Renderer::addNewFrame(const FrameTime & ft)
 {
-  if (frames_.size() >= 1000) {
-    RCLCPP_WARN_THROTTLE(
-      get_logger(), *get_clock(), 5000, "frames dropped because no events are received!");
-  } else {
-    frames_.push_back(ft);
+  // If no events have come in for a while, publish empty frames to avoid burst publishing later
+
+  while (!frames_.empty() && (ft.ros_time - frames_.front().ros_time) >= maxDelay_) {
+    const auto delay = ft.ros_time - frames_.front().ros_time;
+    RCLCPP_WARN_STREAM_THROTTLE(
+      get_logger(), *get_clock(), 5000,
+      "low event rate or slow processing, publishing empty frames!");
+    publishFrame(frames_.front());
+    frames_.pop_front();
   }
+  frames_.push_back(ft);
   processEventMessages();
 }
 
@@ -221,6 +229,12 @@ void Renderer::processEventMessages()
     while (!frames.empty()) {
       const uint64_t time_limit = frames.front().sensor_time;
       uint64_t next_time = 0;
+      const auto dt = this->get_clock()->now() - rclcpp::Time(msg->header.stamp);
+      if (dt > maxDelay_) {
+        RCLCPP_WARN_STREAM_THROTTLE(
+          get_logger(), *get_clock(), 1000,
+          "display is lagging by " << dt.seconds() << " seconds!");
+      }
       if (!display_->update(*msg, time_limit, &next_time)) {
         // event message was completely decoded. Cannot emit frame yet
         // because more events may arrive that are before the frame time

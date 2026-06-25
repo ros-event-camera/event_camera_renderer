@@ -80,6 +80,7 @@ private:
   PeriodEstimator framePeriod_;
   int eventQueueMemoryLimit_{0};
   size_t eventQueueMemory_{0};
+  rclcpp::Duration maxDelay_{0, 0};  // maximum delay for events
 };
 std::ostream & operator<<(std::ostream & os, const Renderer::FrameTime & ft);
 }  // namespace event_camera_renderer

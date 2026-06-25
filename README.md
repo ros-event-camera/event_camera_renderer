@@ -38,11 +38,14 @@ set the clock rate much higher than ``fps``.
 
 Parameters:
 
-- ``fps`` Frequency (in hz) at which images are emitted. Default: 25.
-- ``display_type`` Supported types are ``time_slice`` (all events
+- ``fps``: Frequency (in hz) at which images are emitted. Default: 25.
+- ``max_wait_frames``: Maximum number of frames to wait for events to arrive
+   before publishing an empty frame. Empty frames will also be published
+   if the display node is not rendering fast enough. Default: 5.
+- ``display_type``: Supported types are ``time_slice`` (all events
   between frames are aggregated) or ``sharp`` (number of events is
   auto-controlled to produce sharp features). Default is
-  ``time_slice``. This image shows the difference (left is sharp,
+  ``time_slice``: This image shows the difference (left is sharp,
   right is time_slice): 
   <img src="images/time_slice_vs_sharp.png" width="800"/>
 

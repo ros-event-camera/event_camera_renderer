@@ -42,6 +42,7 @@ Parameters:
 - ``max_wait_frames``: Maximum number of frames to wait for events to arrive
    before publishing an empty frame. Empty frames will also be published
    if the display node is not rendering fast enough. Default: 5.
+- ``statistics_interval``: Time in seconds between publishing statistics logging.
 - ``display_type``: Supported types are ``time_slice`` (all events
   between frames are aggregated) or ``sharp`` (number of events is
   auto-controlled to produce sharp features). Default is

@@ -60,16 +60,19 @@ private:
 
   void frameTimerExpired();
   void subscriptionCheckTimerExpired();
+  void statisticsTimerExpired();
   void eventMsg(EventPacket::ConstSharedPtr msg);
   void startNewImage();
   void addNewFrame(const FrameTime & ft);
   void processEventMessages();
   void publishFrame(const FrameTime & ft);
   void resetTime();
+  void updatePublishStatistics(uint64_t t_ros, uint64_t t_now);
   // ------------------------  variables ------------------------------
   std::shared_ptr<Display> display_;
   rclcpp::TimerBase::SharedPtr frameTimer_;
   rclcpp::TimerBase::SharedPtr subscriptionCheckTimer_;
+  rclcpp::TimerBase::SharedPtr statisticsTimer_;
   double sliceTime_;  // duration of one frame
   rclcpp::Subscription<event_camera_msgs::msg::EventPacket>::SharedPtr eventSub_;
   image_transport::Publisher imagePub_;
@@ -81,7 +84,14 @@ private:
   int eventQueueMemoryLimit_{0};
   size_t eventQueueMemory_{0};
   rclcpp::Duration maxDelay_{0, 0};  // maximum delay for events
+  double statisticsInterval_{1.0};
+  uint64_t statisticsCounter_{0};
+  int64_t maxPublishDelay_{std::numeric_limits<int64_t>::min()};
+  int64_t minPublishDelay_{std::numeric_limits<int64_t>::max()};
+  int64_t sumDelays_{0};
+  rclcpp::Time lastStatisticsTime_;
 };
+
 std::ostream & operator<<(std::ostream & os, const Renderer::FrameTime & ft);
 }  // namespace event_camera_renderer
 #endif  // EVENT_CAMERA_RENDERER__RENDERER_H_

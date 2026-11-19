@@ -54,11 +54,15 @@ Renderer::Renderer(const rclcpp::NodeOptions & options)
     RCLCPP_ERROR_STREAM(this->get_logger(), "invalid display type: " << displayType);
     throw std::runtime_error("invalid display type!");
   }
+  RCLCPP_INFO_STREAM(this->get_logger(), "using display type: " << displayType);
   this->get_parameter_or("event_queue_memory_limit", eventQueueMemoryLimit_, 10 * 1024 * 1024);
-
   double fps;
   this->get_parameter_or("fps", fps, 25.0);
   sliceTime_ = 1.0 / fps;
+  int maxWaitFrames;
+  this->get_parameter_or("max_wait_frames", maxWaitFrames, 5);
+  maxDelay_ = rclcpp::Duration::from_seconds(sliceTime_ * maxWaitFrames);
+
   imageMsgTemplate_.height = 0;
 #ifdef IMAGE_TRANSPORT_USE_QOS
   const auto qosProf = rclcpp::SystemDefaultsQoS();
@@ -78,6 +82,12 @@ Renderer::Renderer(const rclcpp::NodeOptions & options)
   subscriptionCheckTimer_ = rclcpp::create_timer(
     this, get_clock(), rclcpp::Duration(1, 0),
     std::bind(&Renderer::subscriptionCheckTimerExpired, this));
+  // monitor delay statistics
+  this->get_parameter_or("statistics_interval", statisticsInterval_, 10.0);
+  lastStatisticsTime_ = this->get_clock()->now();
+  statisticsTimer_ = rclcpp::create_timer(
+    this, get_clock(), rclcpp::Duration::from_seconds(statisticsInterval_),
+    std::bind(&Renderer::statisticsTimerExpired, this));
 }
 
 Renderer::~Renderer()
@@ -87,6 +97,9 @@ Renderer::~Renderer()
   }
   if (subscriptionCheckTimer_) {
     subscriptionCheckTimer_->cancel();
+  }
+  if (statisticsTimer_) {
+    statisticsTimer_->cancel();
   }
 }
 
@@ -131,14 +144,38 @@ void Renderer::subscriptionCheckTimerExpired()
   }
 }
 
+void Renderer::statisticsTimerExpired()
+{
+  if (statisticsCounter_ != 0) {
+    const auto t = this->get_clock()->now();
+    const double timeSinceLast = (t - lastStatisticsTime_).seconds();
+    const double publishRate =
+      static_cast<double>(statisticsCounter_) / (timeSinceLast > 0 ? timeSinceLast : 1.0);
+    const double avgDelay =
+      static_cast<double>(sumDelays_) / static_cast<double>(statisticsCounter_);
+    RCLCPP_INFO(
+      this->get_logger(), "pub rate: %5.2f Hz, delay: %5.2f [%5.2f, %5.2f]ms", publishRate,
+      avgDelay * 1e-6, minPublishDelay_ * 1e-6, maxPublishDelay_ * 1e-6);
+    minPublishDelay_ = std::numeric_limits<int64_t>::max();
+    maxPublishDelay_ = std::numeric_limits<int64_t>::min();
+    statisticsCounter_ = 0;
+    sumDelays_ = 0;
+    lastStatisticsTime_ = t;
+  }
+}
+
 void Renderer::addNewFrame(const FrameTime & ft)
 {
-  if (frames_.size() >= 1000) {
-    RCLCPP_WARN_THROTTLE(
-      get_logger(), *get_clock(), 5000, "frames dropped because no events are received!");
-  } else {
-    frames_.push_back(ft);
+  // If no events have come in for a while, publish empty frames to avoid burst publishing later
+  while (!frames_.empty() && (ft.ros_time - frames_.front().ros_time) >= maxDelay_) {
+    const auto delay = ft.ros_time - frames_.front().ros_time;
+    RCLCPP_WARN_STREAM_THROTTLE(
+      get_logger(), *get_clock(), 5000,
+      "low event rate or slow processing, publishing empty frames!");
+    publishFrame(frames_.front());
+    frames_.pop_front();
   }
+  frames_.push_back(ft);
   processEventMessages();
 }
 
@@ -221,6 +258,12 @@ void Renderer::processEventMessages()
     while (!frames.empty()) {
       const uint64_t time_limit = frames.front().sensor_time;
       uint64_t next_time = 0;
+      const auto dt = this->get_clock()->now() - rclcpp::Time(msg->header.stamp);
+      if (dt > maxDelay_) {
+        RCLCPP_WARN_STREAM_THROTTLE(
+          get_logger(), *get_clock(), 1000,
+          "display is lagging by " << dt.seconds() << " seconds!");
+      }
       if (!display_->update(*msg, time_limit, &next_time)) {
         // event message was completely decoded. Cannot emit frame yet
         // because more events may arrive that are before the frame time
@@ -237,9 +280,27 @@ void Renderer::processEventMessages()
   }
 }
 
+void Renderer::updatePublishStatistics(uint64_t t_ros, uint64_t t_now)
+{
+  const int64_t delay = static_cast<int64_t>(t_now) - static_cast<int64_t>(t_ros);
+  if (delay < 0) {
+    RCLCPP_WARN_STREAM(this->get_logger(), "time is going backwards!");
+    return;
+  }
+  if (delay > maxPublishDelay_) {
+    maxPublishDelay_ = delay;
+  }
+  if (delay < minPublishDelay_) {
+    minPublishDelay_ = delay;
+  }
+  sumDelays_ += delay;
+  statisticsCounter_++;
+}
+
 void Renderer::publishFrame(const FrameTime & ft)
 {
   if (imagePub_.getNumSubscribers() != 0 && display_->hasImage()) {
+    updatePublishStatistics(ft.ros_time.nanoseconds(), this->get_clock()->now().nanoseconds());
     // take memory managent from image updater
     sensor_msgs::msg::Image::UniquePtr updated_img = display_->getImage();
     updated_img->header.stamp = ft.ros_time;
